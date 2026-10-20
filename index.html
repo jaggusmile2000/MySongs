@@ -13,6 +13,7 @@
   --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
   --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:dark;
+  --heart:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21s-7.5-4.6-9.5-9.2C1.2 8.4 3.2 5 6.6 5c2 0 3.6 1.1 5.4 3 1.8-1.9 3.4-3 5.4-3 3.4 0 5.4 3.4 4.1 6.8C19.5 16.4 12 21 12 21z'/></svg>");
 }
 *{box-sizing:border-box;margin:0}
 body{
@@ -36,11 +37,6 @@ header{padding:64px 4px 8px}
 h1{font-family:var(--serif);font-style:italic;font-weight:500;font-size:clamp(38px,11vw,56px);line-height:1.04;letter-spacing:-.015em;color:var(--moon)}
 .sub{margin-top:12px;color:var(--mist);font-size:16.5px;max-width:34ch}
 .by{margin-top:6px;font-family:var(--serif);font-style:italic;color:var(--gold);font-size:17px}
-.route{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;margin-top:26px;font-family:var(--serif);font-style:italic;color:var(--mist);font-size:15px}
-.track{position:relative;height:2px;border-top:2px dashed rgba(180,189,228,.4)}
-.track svg{position:absolute;top:-10px;left:0;width:22px;height:22px;fill:var(--gold);filter:drop-shadow(0 0 7px var(--glow));animation:glide 5s ease-in-out .4s both}
-@keyframes glide{from{left:0}to{left:calc(100% - 22px)}}
-@media (prefers-reduced-motion:reduce){.track svg{animation:none;left:calc(50% - 11px)}}
 .count{margin-top:18px;font-family:var(--serif);font-style:italic;color:var(--mist);font-size:16px}
 .count b{font-style:normal;font-size:30px;color:var(--gold);margin-right:6px}
 
@@ -100,6 +96,21 @@ footer b{display:block;margin-top:4px;color:var(--gold);font-size:22px;font-weig
 .next{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:1px solid rgba(180,189,228,.35)}
 .next svg{width:16px;height:16px;fill:var(--ivory)}
 .next:disabled{opacity:.35;cursor:default}
+
+.pulse{display:flex;flex-direction:column;align-items:center;margin-top:30px}
+.beat{position:relative;width:104px;height:104px;display:grid;place-items:center;border-radius:50%;-webkit-tap-highlight-color:transparent}
+.beat svg{position:relative;width:66px;height:66px;fill:var(--gold);filter:drop-shadow(0 0 14px var(--glow));animation:lub 1.7s ease-in-out infinite}
+@keyframes lub{0%,100%{transform:scale(1)}12%{transform:scale(1.14)}24%{transform:scale(1)}36%{transform:scale(1.09)}48%{transform:scale(1)}}
+.beat.tap svg{animation:thump .38s ease-out}
+@keyframes thump{0%{transform:scale(1)}40%{transform:scale(1.38)}100%{transform:scale(1)}}
+.ring{position:absolute;inset:16px;border-radius:50%;border:2px solid var(--gold);opacity:0;animation:ripple 1.7s ease-out infinite}
+.ring.r2{animation-delay:.85s}
+@keyframes ripple{0%{transform:scale(.7);opacity:.5}100%{transform:scale(1.75);opacity:0}}
+.beat-msg{margin-top:12px;min-height:1.6em;text-align:center;font-family:var(--serif);font-style:italic;color:var(--mist);font-size:17px}
+#floaters{position:fixed;inset:0;pointer-events:none;z-index:4}
+.fh{position:absolute;background:var(--gold);-webkit-mask:var(--heart) center/contain no-repeat;mask:var(--heart) center/contain no-repeat;animation:rise 1.7s ease-out both}
+@keyframes rise{from{transform:translateY(0) scale(.6);opacity:0}15%{opacity:.95}to{transform:translateY(-180px) scale(1.1);opacity:0}}
+@media (prefers-reduced-motion:reduce){.beat svg,.beat.tap svg{animation:none}.ring{display:none}}
 </style>
 </head>
 <body>
@@ -111,7 +122,14 @@ footer b{display:block;margin-top:4px;color:var(--gold);font-size:22px;font-weig
     <h1>Under the same sky</h1>
     <p class="sub">A song for every moment I think of you.</p>
     <p class="by" id="by"></p>
-    <div class="route" aria-hidden="true"><span id="lname">Me</span><span class="track"><svg viewBox="0 0 24 24"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.4 3.2 5 6.6 5c2 0 3.6 1.1 5.4 3 1.8-1.9 3.4-3 5.4-3 3.4 0 5.4 3.4 4.1 6.8C19.5 16.4 12 21 12 21z"/></svg></span><span id="rname">You</span></div>
+    <div class="pulse">
+      <button class="beat" id="beat" aria-label="Tap when you miss me">
+        <span class="ring"></span><span class="ring r2"></span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.5-9.2C1.2 8.4 3.2 5 6.6 5c2 0 3.6 1.1 5.4 3 1.8-1.9 3.4-3 5.4-3 3.4 0 5.4 3.4 4.1 6.8C19.5 16.4 12 21 12 21z"/></svg>
+      </button>
+      <p class="beat-msg" id="beatmsg" aria-live="polite">Tap when you miss me</p>
+    </div>
+    <div id="floaters" aria-hidden="true"></div>
     <div class="count" id="count" hidden></div>
 
   </header>
@@ -209,8 +227,6 @@ function bars(seed){
 /* ---------- personal touches ---------- */
 function renderHero(){
   const her=state.her.trim(), his=state.his.trim();
-  $("lname").textContent=her||"Me";
-  $("rname").textContent=his||"You";
   const by=$("by");
   by.textContent=(her||his)?`For ${his||"you"}, from ${her||"me"}`:"";
   by.hidden=!(her||his);
@@ -224,7 +240,6 @@ function renderHero(){
   } else cnt.hidden=true;
 
   $("letter").innerHTML=`
-    <p>Dear ${esc(his||"you")},</p>
     <p>Wherever you are tonight, we're under the same moon.</p>
     <p>I made this little corner of songs so you can find me in it whenever you want. Take your time with it, and know that I'm smiling on the other side of every song.</p>
     <p class="sign">Always yours,<br>${esc(her||"me")}</p>`;
@@ -328,6 +343,28 @@ $("surprise").addEventListener("click",()=>{
   if(state.filter!=="all"){ state.filter="all"; renderChips(); render(); }
   playKey(k);
   requestAnimationFrame(()=>{ const el=document.querySelector(`[data-k="${k}"]`); if(el) el.scrollIntoView({behavior:"smooth",block:"center"}); });
+});
+
+
+/* ---------- heartbeat ---------- */
+const REPLIES=["Me too.","I felt that.","I'm right here.","Come closer, in a song.","Always, always you.","That one reached me.","Counting every beat for you."];
+let taps=0;
+function floatHearts(){
+  const r=$("beat").getBoundingClientRect(), box=$("floaters");
+  for(let i=0;i<3;i++){
+    const h=document.createElement("span"); h.className="fh";
+    const s=12+Math.random()*10;
+    h.style.cssText=`left:${r.left+r.width/2+(Math.random()*80-40)-s/2}px;top:${r.top+r.height/2}px;width:${s}px;height:${s}px;animation-delay:${i*90}ms`;
+    box.appendChild(h); setTimeout(()=>h.remove(),2000);
+  }
+}
+$("beat").addEventListener("click",()=>{
+  const b=$("beat");
+  b.classList.remove("tap"); void b.offsetWidth; b.classList.add("tap");
+  setTimeout(()=>b.classList.remove("tap"),400);
+  $("beatmsg").textContent=REPLIES[taps%REPLIES.length]; taps++;
+  try{ if(navigator.vibrate) navigator.vibrate([25,50,25]); }catch(e){}
+  if(!window.matchMedia("(prefers-reduced-motion: reduce)").matches) floatHearts();
 });
 
 /* ---------- start ---------- */
