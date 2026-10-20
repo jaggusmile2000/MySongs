@@ -241,8 +241,7 @@ function renderHero(){
 
   $("letter").innerHTML=`
     <p>Wherever you are tonight, we're under the same moon.</p>
-    <p>I made this little corner of songs so you can find me in it whenever you want. Take your time with it, and know that I'm smiling on the other side of every song.</p>
-    <p class="sign">Always yours,<br>${esc(her||"me")}</p>`;
+    <p>I made this little corner of songs so you can find me in it whenever you want. Take your time with it, and know that I'm smiling on the other side of every song.</p>`;
   $("foot").innerHTML=`Close your eyes and play one. I'll be right there.<b>${her?esc(her):"Yours"}</b>`;
   document.title = his ? `For ${his}` : "Under the same sky";
 }
